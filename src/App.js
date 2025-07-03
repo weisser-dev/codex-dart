@@ -15,6 +15,7 @@ function App({ setThemeName, themes, lang, setLang }) {
   const [currentPlayer, setCurrentPlayer] = useState(0);
   const [throwsLeft, setThrowsLeft] = useState(3);
   const [multiplier, setMultiplier] = useState(1);
+  const [roundThrows, setRoundThrows] = useState([]);
   const [playerModalShow, setPlayerModalShow] = useState(false);
   const [guestModalShow, setGuestModalShow] = useState(false);
   const [modeModalShow, setModeModalShow] = useState(false);
@@ -126,6 +127,7 @@ function App({ setThemeName, themes, lang, setLang }) {
     setGamePlayers(newGamePlayers);
     const startScore = parseInt(mode, 10) || 0;
     setScores(newGamePlayers.map(() => startScore));
+    setRoundThrows(newGamePlayers.map(() => [null, null, null]));
     setCurrentPlayer(0);
     setThrowsLeft(3);
     setMultiplier(1);
@@ -142,6 +144,10 @@ function App({ setThemeName, themes, lang, setLang }) {
     const sc = [...scores];
     sc[currentPlayer] -= n * multiplier;
     setScores(sc);
+    const rt = roundThrows.map(r => r.slice());
+    const idx = 3 - throwsLeft;
+    rt[currentPlayer][idx] = n * multiplier;
+    setRoundThrows(rt);
     setThrowsLeft(throwsLeft - 1);
   }
 
@@ -151,10 +157,15 @@ function App({ setThemeName, themes, lang, setLang }) {
     }
   }, [throwsLeft]);
 
-  function nextPlayer() {
+  function confirmTurn() {
+    if (throwsLeft > 0) return;
+    const next = (currentPlayer + 1) % gamePlayers.length;
     setThrowsLeft(3);
     setMultiplier(1);
-    setCurrentPlayer((currentPlayer + 1) % gamePlayers.length);
+    const rt = roundThrows.map(r => r.slice());
+    if (rt[next]) rt[next] = [null, null, null];
+    setRoundThrows(rt);
+    setCurrentPlayer(next);
   }
 
   return (
@@ -216,22 +227,40 @@ function App({ setThemeName, themes, lang, setLang }) {
             <button className="btn btn-link back-btn" onClick={() => setView('home')}>&#x2190;</button>
           </div>
           <div id="scoreboard" className="mb-3">
-            {gamePlayers.map((p, i) => (
-              <div key={i} className={'d-flex justify-content-between' + (i === currentPlayer ? ' fw-bold' : '')}>
-                <strong>{p}</strong><span>{scores[i]}</span>
-              </div>
-            ))}
+            <table className="table table-bordered text-center score-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  {gamePlayers.map((p, i) => (
+                    <th key={i} className={i === currentPlayer ? 'table-primary' : ''}>
+                      {p}
+                      <div>{scores[i]}</div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {[0, 1, 2].map(r => (
+                  <tr key={r}>
+                    <th>{r + 1}</th>
+                    {gamePlayers.map((_, i) => (
+                      <td key={i}>{roundThrows[i] && roundThrows[i][r] != null ? roundThrows[i][r] : ''}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
           <div id="throw-area" className="mb-3">
-            {Array.from({ length: 21 }, (_, i) => i).concat([25, 50]).map(n => (
-              <button key={n} className="btn btn-outline-secondary m-1" onClick={() => registerThrow(n)}>{n}</button>
+            {[0, ...Array.from({ length: 20 }, (_, i) => i + 1), 25, 50].map(n => (
+              <button key={n} className="btn btn-outline-secondary m-1" onClick={() => registerThrow(n)}>{n === 0 ? t.miss : n}</button>
             ))}
             <div className="mt-2">
               <button className={'btn btn-secondary me-2' + (multiplier === 2 ? ' active' : '')} onClick={() => setMultiplier(multiplier === 2 ? 1 : 2)}>Double</button>
               <button className={'btn btn-secondary' + (multiplier === 3 ? ' active' : '')} onClick={() => setMultiplier(multiplier === 3 ? 1 : 3)}>Triple</button>
             </div>
           </div>
-          <button id="next-player" className={'btn btn-primary' + (throwsLeft > 0 ? ' hidden' : '')} onClick={nextPlayer}>{t.nextPlayer}</button>
+          <button id="confirm-turn" className="btn btn-primary" disabled={throwsLeft > 0} onClick={confirmTurn}>{t.confirmTurn}</button>
         </section>
       )}
 
