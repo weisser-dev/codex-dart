@@ -18,18 +18,9 @@ function App({ setThemeName, themes, lang, setLang }) {
   const [playerModalShow, setPlayerModalShow] = useState(false);
   const [guestModalShow, setGuestModalShow] = useState(false);
   const [modeModalShow, setModeModalShow] = useState(false);
-  const [infoModalShow, setInfoModalShow] = useState(false);
-  const [infoMode, setInfoMode] = useState('');
   const [playerSelect, setPlayerSelect] = useState('');
   const [newPlayerName, setNewPlayerName] = useState('');
   const [guestName, setGuestName] = useState('');
-
-  const modeGroups = {
-    classic: ['301', '501', '701', '1001'],
-    competition: ['competition'],
-    fun: ['tannenbaum', 'cricket', 'shanghai', 'killer', 'baseball'],
-    training: ['double', 'checkout', 'averages']
-  };
 
   useEffect(() => localStorage.setItem('darts-players', JSON.stringify(players)), [players]);
   useEffect(() => localStorage.setItem('darts-stats', JSON.stringify(stats)), [stats]);
@@ -38,62 +29,22 @@ function App({ setThemeName, themes, lang, setLang }) {
     de: {
       '301': 'Jeder Spieler startet bei 301 Punkten und spielt herunter.',
       '501': 'Jeder Spieler startet bei 501 Punkten und spielt herunter.',
-      '701': 'Jeder Spieler startet bei 701 Punkten und spielt herunter.',
-      '1001': 'Jeder Spieler startet bei 1001 Punkten und spielt herunter.',
-      'competition': 'Modus nach offiziellen Turnierregeln (PDC). Double-In & Double-Out. Best-of-X Legs und Sets. Optional kein Checkout-Hinweis.',
-      'tannenbaum': 'Treffe der Reihe nach die Felder 1 bis 20 und dann die Doppel.',
-      'cricket': 'Treffe die Felder 15–20 und Bull jeweils dreimal.',
-      'shanghai': 'Runde 1 auf 1, Runde 2 auf 2 usw. Single, Double und Triple in einer Runde gewinnt sofort.',
-      'killer': 'Jeder hat eine Zahl. Doppel auf die eigene Zahl macht dich zum Killer, Doppel auf Gegner nimmt Leben.',
-      'baseball': 'Neun Runden. In Runde n wird auf Feld n geworfen. Punkte entsprechen dem Treffer.',
-      'double': 'Alle Doppel der Reihe nach treffen.',
-      'checkout': 'Checkouts von 170 bis 50 trainieren.',
-      'averages': 'Auf Punkte spielen und den Average verbessern.'
+      'tannenbaum': 'Treffe der Reihe nach die Felder 1 bis 20 und dann die Doppel.'
     },
     en: {
       '301': 'Each player starts with 301 points and plays down.',
       '501': 'Each player starts with 501 points and plays down.',
-      '701': 'Each player starts with 701 points and plays down.',
-      '1001': 'Each player starts with 1001 points and plays down.',
-      'competition': 'Official tournament rules (PDC). Always Double-In & Double-Out. Best-of-X legs and sets. Optional no checkout hint.',
-      'tannenbaum': 'Hit fields 1 to 20 in order and then the doubles.',
-      'cricket': 'Hit 15–20 and bull three times each before opponents.',
-      'shanghai': 'Round 1 on 1, round 2 on 2, etc. Hitting single, double and triple of a number in one round wins instantly.',
-      'killer': 'Each player has a number. A double on your own makes you killer, doubles on opponents take lives.',
-      'baseball': 'Nine innings. In inning n aim for field n. Score equals the hit.',
-      'double': 'Practice hitting all doubles in sequence.',
-      'checkout': 'Train checkouts from 170 down to 50.',
-      'averages': 'Play for score and improve your average.'
+      'tannenbaum': 'Hit fields 1 to 20 in order and then the doubles.'
     },
     es: {
       '301': 'Cada jugador comienza con 301 puntos y va restando.',
       '501': 'Cada jugador comienza con 501 puntos y va restando.',
-      '701': 'Cada jugador comienza con 701 puntos y va restando.',
-      '1001': 'Cada jugador comienza con 1001 puntos y va restando.',
-      'competition': 'Modo oficial PDC. Siempre Double-In & Double-Out. Best-of-X legs y sets.',
-      'tannenbaum': 'Acierte los campos del 1 al 20 en orden y luego los dobles.',
-      'cricket': 'Acierta los campos 15–20 y Bull tres veces cada uno.',
-      'shanghai': 'Ronda 1 a la 1, ronda 2 a la 2, etc. Single, doble y triple en la misma ronda gana.',
-      'killer': 'Cada jugador tiene un número. Doble propio te hace killer, dobles a rivales quitan vidas.',
-      'baseball': 'Nueve rondas tirando al número correspondiente.',
-      'double': 'Practica todos los dobles en orden.',
-      'checkout': 'Entrena checkouts de 170 a 50.',
-      'averages': 'Juega por puntos para mejorar tu promedio.'
+      'tannenbaum': 'Acierte los campos del 1 al 20 en orden y luego los dobles.'
     },
     ru: {
       '301': 'Каждый игрок начинает с 301 очка и снижает счет.',
       '501': 'Каждый игрок начинает с 501 очка и снижает счет.',
-      '701': 'Каждый игрок начинает с 701 очка и снижает счет.',
-      '1001': 'Каждый игрок начинает с 1001 очка и снижает счет.',
-      'competition': 'Режим по официальным правилам PDC. Всегда Double-In и Double-Out. Матчи Best-of-X.',
-      'tannenbaum': 'Попадайте по полям 1-20 по порядку, затем доблы.',
-      'cricket': 'Попадите по секторам 15–20 и быку по три раза.',
-      'shanghai': 'Раунд 1 по 1, раунд 2 по 2 и т.д. Если выбить single, double и triple за раунд — победа.',
-      'killer': 'Каждому назначается число. Двойное в свое число делает киллером, двойные в чужие отнимают жизни.',
-      'baseball': 'Девять раундов, в раунде n бросаем по сектору n.',
-      'double': 'Тренируйте попадание во все двойные подряд.',
-      'checkout': 'Отработка чек-аутов со 170 до 50.',
-      'averages': 'Играйте на очки и улучшайте средний.'
+      'tannenbaum': 'Попадайте по полям 1-20 по порядку, затем доблы.'
     }
   };
 
@@ -175,7 +126,7 @@ function App({ setThemeName, themes, lang, setLang }) {
           <div className="mb-2">
             <label className="form-label">{t.mode}:</label>
             <button className="btn btn-secondary w-100" onClick={() => setModeModalShow(true)}>
-              {t.modeNames?.[mode] || t.modes[mode] || mode}
+              {t.modes[mode] || mode}
             </button>
           </div>
           <div className="mb-2">
@@ -370,38 +321,15 @@ function App({ setThemeName, themes, lang, setLang }) {
                 <button type="button" className="btn-close" onClick={() => setModeModalShow(false)}></button>
               </div>
               <div className="modal-body">
-                {Object.keys(modeGroups).map(g => (
-                  <div key={g} className="mb-3">
-                    <h6>{t.modes[g]}</h6>
-                    {modeGroups[g].map(m => (
-                      <div key={m} className="d-flex mb-2">
-                        <button className={'btn flex-grow-1 me-2 ' + (m === mode ? 'btn-primary' : 'btn-outline-primary')} onClick={() => setMode(m)}>
-                          {t.modeNames?.[m] || m}
-                        </button>
-                        <button className="btn btn-outline-secondary" onClick={() => { setInfoMode(m); setInfoModalShow(true); }}>?</button>
-                      </div>
-                    ))}
-                  </div>
+                {Object.keys(t.modes).map(m => (
+                  <button key={m} className={'btn w-100 mb-2 ' + (m === mode ? 'btn-primary' : 'btn-outline-primary')} onClick={() => setMode(m)}>
+                    {t.modes[m]}
+                  </button>
                 ))}
+                <p className="mt-3">{t.modeDescriptions[mode]}</p>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-success" onClick={() => setModeModalShow(false)}>{t.confirmMode}</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {infoModalShow && (
-        <div className="modal d-block" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">{t.modeNames?.[infoMode] || infoMode}</h5>
-                <button type="button" className="btn-close" onClick={() => setInfoModalShow(false)}></button>
-              </div>
-              <div className="modal-body">
-                <p>{(rulesText[lang] && rulesText[lang][infoMode]) || ''}</p>
               </div>
             </div>
           </div>
