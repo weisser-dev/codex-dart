@@ -33,6 +33,14 @@ main {
 #scoreboard {
   margin-top: 1rem;
 }
+.score-table th,
+.score-table td {
+  text-align: center;
+}
+.score-table .table-primary {
+  background-color: var(--primary-color);
+  color: #fff;
+}
 .player {
   display: flex;
   justify-content: space-between;
