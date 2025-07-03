@@ -1,6 +1,6 @@
 const { useState, useEffect } = React;
 
-function App() {
+function App({ setThemeName, themes }) {
   const [view, setView] = useState('home');
   const [players, setPlayers] = useState(() => JSON.parse(localStorage.getItem('darts-players') || '[]'));
   const [stats, setStats] = useState(() => JSON.parse(localStorage.getItem('darts-stats') || '{}'));
@@ -95,7 +95,8 @@ function App() {
           <button className="btn btn-primary w-100 mb-2" onClick={() => { setNewGamePlayers([]); setView('newGame'); }}>Neues Spiel starten</button>
           <button className="btn btn-primary w-100 mb-2" onClick={() => setView('stats')}>Statistiken</button>
           <button className="btn btn-primary w-100 mb-2" onClick={() => setView('players')}>Spieler</button>
-          <button className="btn btn-primary w-100" onClick={() => setView('rules')}>Regeln</button>
+          <button className="btn btn-primary w-100 mb-2" onClick={() => setView('rules')}>Regeln</button>
+          <button className="btn btn-primary w-100" onClick={() => setView('settings')}>Einstellungen</button>
         </section>
       )}
 
@@ -214,6 +215,22 @@ function App() {
         </section>
       )}
 
+      {view === 'settings' && (
+        <section id="settings">
+          <div className="d-flex justify-content-between align-items-center">
+            <h2 className="m-0">Einstellungen</h2>
+            <button className="btn btn-link back-btn" onClick={() => setView('home')}>&#x2190;</button>
+          </div>
+          <div className="mt-2">
+            {Object.keys(themes).map(name => (
+              <button key={name} className="btn btn-primary me-2 mb-2" onClick={() => setThemeName(name)}>
+                {name}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Player Modal */}
       {playerModalShow && (
         <div className="modal d-block" tabIndex="-1">
@@ -272,7 +289,4 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
-}
+export default App;

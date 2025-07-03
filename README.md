@@ -15,6 +15,7 @@ Dieses Projekt ist eine einfache Progressive Web App (PWA), mit der Darts-Spiele
 - **Speicherung in localStorage**: Saemtliche Daten werden im Browser gespeichert.
 - **App-Installation**: Die Anwendung kann als PWA installiert werden.
 - **Responsive Design**: Dank eingebundenem Bootstrap passt sich die Oberflaeche an unterschiedliche Bildschirmgroessen an.
+- **Einstellungsseite**: In den Einstellungen kann zwischen mehreren Farbthemes gewechselt werden. Standardmaeßig orientiert sich die App am System-Theme.
 
 ## Nutzung
 
@@ -30,8 +31,10 @@ Diese Anwendung kann direkt ueber GitHub Pages veroeffentlicht werden. Im Reposi
 ## Dateien
 
 - `index.html` – Einstiegspunkt der WebApp
-- `styles.css` – Grundlegendes Styling; Bootstrap wird per CDN eingebunden
-- `app.js` – Logik zum Starten von Spielen und Speichern der Daten
+- `src/index.js` – Einstiegspunkt fuer React und Themeverwaltung
+- `src/App.js` – Hauptlogik zum Starten von Spielen und Speichern der Daten
+- `src/styles.css` – Grundlegendes Styling; Bootstrap wird per CDN eingebunden und per Themes angepasst
+- `src/themes.json` – Definiert die verfuegbaren Farbthemes
 - `manifest.json` – Einstellungen fuer die PWA-Installation
 - `service-worker.js` – Offline-Unterstuetzung
 - Icons sind direkt im `manifest.json` als Base64-Daten eingebettet
