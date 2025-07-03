@@ -1,188 +1,278 @@
-(function() {
-  const sections = {
-    home: document.getElementById('home'),
-    newGame: document.getElementById('new-game'),
-    game: document.getElementById('game'),
-    stats: document.getElementById('stats'),
-    players: document.getElementById('players'),
-    rules: document.getElementById('rules')
-  };
+const { useState, useEffect } = React;
 
-  function showSection(id) {
-    Object.values(sections).forEach(s => s.classList.add('hidden'));
-    sections[id].classList.remove('hidden');
-  }
+function App() {
+  const [view, setView] = useState('home');
+  const [players, setPlayers] = useState(() => JSON.parse(localStorage.getItem('darts-players') || '[]'));
+  const [stats, setStats] = useState(() => JSON.parse(localStorage.getItem('darts-stats') || '{}'));
+  const [newGamePlayers, setNewGamePlayers] = useState([]);
+  const [mode, setMode] = useState('301');
+  const [rounds, setRounds] = useState(3);
+  const [doubleIn, setDoubleIn] = useState(false);
+  const [doubleOut, setDoubleOut] = useState(false);
+  const [gamePlayers, setGamePlayers] = useState([]);
+  const [scores, setScores] = useState([]);
+  const [currentPlayer, setCurrentPlayer] = useState(0);
+  const [throwsLeft, setThrowsLeft] = useState(3);
+  const [multiplier, setMultiplier] = useState(1);
+  const [playerModalShow, setPlayerModalShow] = useState(false);
+  const [guestModalShow, setGuestModalShow] = useState(false);
+  const [playerSelect, setPlayerSelect] = useState('');
+  const [newPlayerName, setNewPlayerName] = useState('');
+  const [guestName, setGuestName] = useState('');
 
-  document.getElementById('btn-new-game').addEventListener('click', () => showSection('newGame'));
-  document.getElementById('btn-stats').addEventListener('click', () => { loadStats(); showSection('stats'); });
-  document.getElementById('btn-players').addEventListener('click', () => { loadPlayers(); showSection('players'); });
-  document.getElementById('btn-rules').addEventListener('click', () => showSection('rules'));
+  useEffect(() => localStorage.setItem('darts-players', JSON.stringify(players)), [players]);
+  useEffect(() => localStorage.setItem('darts-stats', JSON.stringify(stats)), [stats]);
 
-  document.getElementById('back-home-from-new').addEventListener('click', () => showSection('home'));
-  document.getElementById('back-home-from-game').addEventListener('click', () => showSection('home'));
-  document.getElementById('back-home-from-stats').addEventListener('click', () => showSection('home'));
-  document.getElementById('back-home-from-players').addEventListener('click', () => showSection('home'));
-  document.getElementById('back-home-from-rules').addEventListener('click', () => showSection('home'));
-
-  const rulesText = document.getElementById('rules-text');
-  const modeSelect = document.getElementById('mode');
-  const roundsInput = document.getElementById('rounds');
-  const doubleIn = document.getElementById('double-in');
-  const doubleOut = document.getElementById('double-out');
-  const playersInput = document.getElementById('players');
-  const startBtn = document.getElementById('start-game');
-  const addGuestBtn = document.getElementById('add-guest');
-  const scoreboard = document.getElementById('scoreboard');
-  const throwArea = document.getElementById('throw-area');
-  const nextPlayerBtn = document.getElementById('next-player');
-  const statsContent = document.getElementById('stats-content');
-  const playersList = document.getElementById('players-list');
-  const newPlayerInput = document.getElementById('new-player');
-  const addPlayerBtn = document.getElementById('add-player');
-
-  const rules = {
+  const rulesText = {
     '301': 'Jeder Spieler startet bei 301 Punkten und spielt herunter.',
     '501': 'Jeder Spieler startet bei 501 Punkten und spielt herunter.',
     'tannenbaum': 'Treffe der Reihe nach die Felder 1 bis 20 und dann die Doppel.'
   };
 
-  modeSelect.addEventListener('change', () => {
-    rulesText.textContent = rules[modeSelect.value] || '';
-  });
-
-  function loadPlayers() {
-    const data = JSON.parse(localStorage.getItem('darts-players') || '[]');
-    playersList.innerHTML = data.map(n => `<div>${n}</div>`).join('');
-  }
-
-  function savePlayer(name) {
-    const data = JSON.parse(localStorage.getItem('darts-players') || '[]');
-    if (!data.includes(name)) {
-      data.push(name);
-      localStorage.setItem('darts-players', JSON.stringify(data));
+  function addPlayer(name) {
+    if (!name) return;
+    if (!players.includes(name)) {
+      setPlayers([...players, name]);
     }
   }
 
-  addPlayerBtn.addEventListener('click', () => {
-    const name = newPlayerInput.value.trim();
-    if (name) {
-      savePlayer(name);
-      newPlayerInput.value = '';
-      loadPlayers();
-    }
-  });
+  function deletePlayer(idx) {
+    setPlayers(players.filter((_, i) => i !== idx));
+  }
 
-  let guestCount = 1;
-  addGuestBtn.addEventListener('click', () => {
-    const arr = playersInput.value ? playersInput.value.split(',') : [];
-    arr.push('Gast ' + guestCount++);
-    playersInput.value = arr.join(',');
-  });
+  function editPlayer(idx, name) {
+    if (!name) return;
+    setPlayers(players.map((p, i) => i === idx ? name : p));
+  }
 
-  let gamePlayers = [];
-  let scores = [];
-  let currentPlayer = 0;
-  let throwsLeft = 3;
-  let multiplier = 1;
+  function addPlayerToGame(name) {
+    setNewGamePlayers([...newGamePlayers, name]);
+  }
 
-  function setupKeypad() {
-    throwArea.innerHTML = '';
-    const numbers = Array.from({ length: 21 }, (_, i) => i);
-    numbers.push(25, 50);
-    numbers.forEach(n => {
-      const btn = document.createElement('button');
-      btn.className = 'btn btn-outline-secondary m-1';
-      btn.textContent = n;
-      btn.addEventListener('click', () => registerThrow(n));
-      throwArea.appendChild(btn);
+  function removePlayerFromGame(idx) {
+    setNewGamePlayers(newGamePlayers.filter((_, i) => i !== idx));
+  }
+
+  function startGame() {
+    if (!newGamePlayers.length) return;
+    setGamePlayers(newGamePlayers);
+    setScores(newGamePlayers.map(() => parseInt(mode, 10)));
+    setCurrentPlayer(0);
+    setThrowsLeft(3);
+    setMultiplier(1);
+    const updated = { ...stats };
+    newGamePlayers.forEach(p => {
+      updated[p] = updated[p] || { games: 0 };
+      updated[p].games += 1;
     });
-    const multiDiv = document.createElement('div');
-    multiDiv.className = 'mt-2';
-    const dBtn = document.createElement('button');
-    dBtn.className = 'btn btn-secondary me-2';
-    dBtn.textContent = 'Double';
-    const tBtn = document.createElement('button');
-    tBtn.className = 'btn btn-secondary';
-    tBtn.textContent = 'Triple';
-    dBtn.addEventListener('click', () => { multiplier = multiplier === 2 ? 1 : 2; updateMulti(); });
-    tBtn.addEventListener('click', () => { multiplier = multiplier === 3 ? 1 : 3; updateMulti(); });
-    multiDiv.appendChild(dBtn);
-    multiDiv.appendChild(tBtn);
-    throwArea.appendChild(multiDiv);
-
-    function updateMulti() {
-      dBtn.classList.toggle('active', multiplier === 2);
-      tBtn.classList.toggle('active', multiplier === 3);
-    }
+    setStats(updated);
+    setView('game');
   }
 
   function registerThrow(n) {
-    scores[currentPlayer] -= n * multiplier;
-    updateScoreboard();
-    throwsLeft--;
+    const sc = [...scores];
+    sc[currentPlayer] -= n * multiplier;
+    setScores(sc);
+    setThrowsLeft(throwsLeft - 1);
+  }
+
+  useEffect(() => {
     if (throwsLeft === 0) {
-      nextPlayerBtn.classList.remove('hidden');
+      // wait for user to click next
     }
+  }, [throwsLeft]);
+
+  function nextPlayer() {
+    setThrowsLeft(3);
+    setMultiplier(1);
+    setCurrentPlayer((currentPlayer + 1) % gamePlayers.length);
   }
 
-  function updateScoreboard() {
-    scoreboard.innerHTML = '';
-    gamePlayers.forEach((p, i) => {
-      const div = document.createElement('div');
-      div.className = 'd-flex justify-content-between';
-      div.innerHTML = `<strong>${p}</strong><span>${scores[i]}</span>`;
-      if (i === currentPlayer) div.classList.add('fw-bold');
-      scoreboard.appendChild(div);
-    });
-  }
+  return (
+    <div>
+      {view === 'home' && (
+        <section id="home">
+          <button className="btn btn-primary w-100 mb-2" onClick={() => { setNewGamePlayers([]); setView('newGame'); }}>Neues Spiel starten</button>
+          <button className="btn btn-primary w-100 mb-2" onClick={() => setView('stats')}>Statistiken</button>
+          <button className="btn btn-primary w-100 mb-2" onClick={() => setView('players')}>Spieler</button>
+          <button className="btn btn-primary w-100" onClick={() => setView('rules')}>Regeln</button>
+        </section>
+      )}
 
-  nextPlayerBtn.addEventListener('click', () => {
-    throwsLeft = 3;
-    multiplier = 1;
-    nextPlayerBtn.classList.add('hidden');
-    currentPlayer = (currentPlayer + 1) % gamePlayers.length;
-    updateScoreboard();
-  });
+      {view === 'newGame' && (
+        <section id="new-game">
+          <h2>Neues Spiel</h2>
+          <div className="mb-2">
+            <label className="form-label">Spielmodus:</label>
+            <select value={mode} onChange={e => setMode(e.target.value)} className="form-select">
+              <option value="301">301</option>
+              <option value="501">501</option>
+              <option value="tannenbaum">Tannenbaum</option>
+            </select>
+          </div>
+          <div className="mb-2">
+            <label className="form-label">Runden:</label>
+            <input type="number" min="1" value={rounds} onChange={e => setRounds(parseInt(e.target.value, 10))} className="form-control" />
+          </div>
+          <div className="form-check mb-1">
+            <input id="double-in" type="checkbox" className="form-check-input" checked={doubleIn} onChange={e => setDoubleIn(e.target.checked)} />
+            <label className="form-check-label" htmlFor="double-in">Double In</label>
+          </div>
+          <div className="form-check mb-2">
+            <input id="double-out" type="checkbox" className="form-check-input" checked={doubleOut} onChange={e => setDoubleOut(e.target.checked)} />
+            <label className="form-check-label" htmlFor="double-out">Double Out</label>
+          </div>
+          <table className="table table-striped mb-2">
+            <tbody>
+              {newGamePlayers.map((n, i) => (
+                <tr key={i}>
+                  <td>{n}</td>
+                  <td className="text-end"><button className="btn btn-link p-0" onClick={() => removePlayerFromGame(i)}>&#128465;</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button className="btn btn-primary me-2 mb-2" onClick={() => { setPlayerModalShow(true); setPlayerSelect(players[0] || '__new__'); }}>Spieler hinzufügen</button>
+          <button className="btn btn-secondary mb-2" onClick={() => setGuestModalShow(true)}>Gast hinzufügen</button>
+          <div>
+            <button className="btn btn-success" onClick={startGame}>Spiel starten</button>
+            <button className="btn btn-link back-btn" onClick={() => setView('home')}>&#x2190;</button>
+          </div>
+        </section>
+      )}
 
-  function startGame() {
-    const names = playersInput.value.split(',').map(s => s.trim()).filter(Boolean);
-    if (!names.length) return;
-    gamePlayers = names;
-    scores = names.map(() => parseInt(modeSelect.value, 10));
-    currentPlayer = 0;
-    throwsLeft = 3;
-    multiplier = 1;
-    updateScoreboard();
-    setupKeypad();
-    saveStats(names);
-    showSection('game');
-  }
+      {view === 'game' && (
+        <section id="game">
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <h2 className="m-0">Aktives Spiel</h2>
+            <button className="btn btn-link back-btn" onClick={() => setView('home')}>&#x2190;</button>
+          </div>
+          <div id="scoreboard" className="mb-3">
+            {gamePlayers.map((p, i) => (
+              <div key={i} className={'d-flex justify-content-between' + (i === currentPlayer ? ' fw-bold' : '')}>
+                <strong>{p}</strong><span>{scores[i]}</span>
+              </div>
+            ))}
+          </div>
+          <div id="throw-area" className="mb-3">
+            {Array.from({ length: 21 }, (_, i) => i).concat([25, 50]).map(n => (
+              <button key={n} className="btn btn-outline-secondary m-1" onClick={() => registerThrow(n)}>{n}</button>
+            ))}
+            <div className="mt-2">
+              <button className={'btn btn-secondary me-2' + (multiplier === 2 ? ' active' : '')} onClick={() => setMultiplier(multiplier === 2 ? 1 : 2)}>Double</button>
+              <button className={'btn btn-secondary' + (multiplier === 3 ? ' active' : '')} onClick={() => setMultiplier(multiplier === 3 ? 1 : 3)}>Triple</button>
+            </div>
+          </div>
+          <button id="next-player" className={'btn btn-primary' + (throwsLeft > 0 ? ' hidden' : '')} onClick={nextPlayer}>Nächster Spieler</button>
+        </section>
+      )}
 
-  startBtn.addEventListener('click', startGame);
+      {view === 'stats' && (
+        <section id="stats">
+          <div className="d-flex justify-content-between align-items-center">
+            <h2 className="m-0">Statistiken</h2>
+            <button className="btn btn-link back-btn" onClick={() => setView('home')}>&#x2190;</button>
+          </div>
+          <div id="stats-content" className="mt-2">
+            {Object.keys(stats).length === 0 ? 'Keine Daten' : Object.entries(stats).map(([n, d]) => (
+              <div key={n}>{n}: {d.games} Spiele</div>
+            ))}
+          </div>
+        </section>
+      )}
 
-  function loadStats() {
-    const stats = JSON.parse(localStorage.getItem('darts-stats') || '{}');
-    statsContent.innerHTML = Object.keys(stats).length ? '' : 'Keine Daten';
-    for (const [name, data] of Object.entries(stats)) {
-      const div = document.createElement('div');
-      div.textContent = `${name}: ${data.games} Spiele`;
-      statsContent.appendChild(div);
-    }
-  }
+      {view === 'players' && (
+        <section id="players">
+          <div className="d-flex justify-content-between align-items-center">
+            <h2 className="m-0">Spieler</h2>
+            <button className="btn btn-link back-btn" onClick={() => setView('home')}>&#x2190;</button>
+          </div>
+          <table className="table table-striped mt-2">
+            <tbody>
+              {players.map((p, i) => (
+                <tr key={i}>
+                  <td>{p}</td>
+                  <td className="text-end">
+                    <button className="btn btn-link p-0" onClick={() => { const n = prompt('Neuer Name', p); if (n) editPlayer(i, n.trim()); }}>&#9998;</button>
+                    <button className="btn btn-link text-danger p-0" onClick={() => { if (confirm('Spieler löschen?')) deletePlayer(i); }}>&#128465;</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <button className="btn btn-success mt-3" onClick={() => { const n = prompt('Spielername eingeben'); if (n) addPlayer(n.trim()); }}>Spieler hinzufügen</button>
+        </section>
+      )}
 
-  function saveStats(players) {
-    const stats = JSON.parse(localStorage.getItem('darts-stats') || '{}');
-    players.forEach(p => {
-      stats[p] = stats[p] || { games: 0 };
-      stats[p].games += 1;
-    });
-    localStorage.setItem('darts-stats', JSON.stringify(stats));
-  }
+      {view === 'rules' && (
+        <section id="rules">
+          <div className="d-flex justify-content-between align-items-center">
+            <h2 className="m-0">Regeln</h2>
+            <button className="btn btn-link back-btn" onClick={() => setView('home')}>&#x2190;</button>
+          </div>
+          <p id="rules-text" className="mt-2">{rulesText[mode] || 'Waehle einen Spielmodus, um die Regeln zu sehen.'}</p>
+        </section>
+      )}
 
-  loadStats();
-  loadPlayers();
+      {/* Player Modal */}
+      {playerModalShow && (
+        <div className="modal d-block" tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Spieler hinzufügen</h5>
+                <button type="button" className="btn-close" onClick={() => setPlayerModalShow(false)}></button>
+              </div>
+              <div className="modal-body">
+                <select className="form-select mb-2" value={playerSelect} onChange={e => setPlayerSelect(e.target.value)}>
+                  {players.map(p => <option key={p} value={p}>{p}</option>)}
+                  <option value="__new__">Neuer Spieler...</option>
+                </select>
+                {playerSelect === '__new__' && (
+                  <input type="text" className="form-control" value={newPlayerName} onChange={e => setNewPlayerName(e.target.value)} placeholder="Neuer Spielername" />
+                )}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setPlayerModalShow(false)}>Abbrechen</button>
+                <button type="button" className="btn btn-primary" onClick={() => {
+                  let name = playerSelect === '__new__' ? newPlayerName.trim() : playerSelect;
+                  if (!name) return;
+                  if (playerSelect === '__new__') addPlayer(name);
+                  addPlayerToGame(name);
+                  setNewPlayerName('');
+                  setPlayerModalShow(false);
+                }}>OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js');
-  }
-})();
+      {/* Guest Modal */}
+      {guestModalShow && (
+        <div className="modal d-block" tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Gast hinzufügen</h5>
+                <button type="button" className="btn-close" onClick={() => setGuestModalShow(false)}></button>
+              </div>
+              <div className="modal-body">
+                <input type="text" className="form-control" value={guestName} onChange={e => setGuestName(e.target.value)} placeholder="Name" />
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={() => setGuestModalShow(false)}>Abbrechen</button>
+                <button type="button" className="btn btn-primary" onClick={() => { const n = guestName.trim(); if (!n) return; addPlayerToGame(n); setGuestName(''); setGuestModalShow(false); }}>OK</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
