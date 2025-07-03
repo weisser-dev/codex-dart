@@ -38,6 +38,21 @@ const translations = {
       fun: 'Fun-Modus',
       training: 'Trainingsmodus'
     },
+    modeNames: {
+      '301': '301',
+      '501': '501',
+      '701': '701',
+      '1001': '1001',
+      competition: 'Wettkampfmodus',
+      tannenbaum: 'Tannenbaum',
+      cricket: 'Cricket',
+      shanghai: 'Shanghai',
+      killer: 'Killer',
+      baseball: 'Baseball',
+      double: 'Double-Übung',
+      checkout: 'Checkout-Trainer',
+      averages: 'Averages verbessern'
+    },
     modeDescriptions: {
       classic: 'Bekannte Standardspiele mit einfacher Bedienung – perfekt für gemütliche Runden.',
       competition: 'Angelehnt an den offiziellen Darts-WM-Modus (PDC). Für ambitionierte Spieler.',
@@ -83,6 +98,21 @@ const translations = {
       competition: 'Competition',
       fun: 'Fun Mode',
       training: 'Training Mode'
+    },
+    modeNames: {
+      '301': '301',
+      '501': '501',
+      '701': '701',
+      '1001': '1001',
+      competition: 'Competition',
+      tannenbaum: 'Around the Clock',
+      cricket: 'Cricket',
+      shanghai: 'Shanghai',
+      killer: 'Killer',
+      baseball: 'Baseball',
+      double: 'Double Practice',
+      checkout: 'Checkout Trainer',
+      averages: 'Improve Averages'
     },
     modeDescriptions: {
       classic: 'Well known standard games for relaxed sessions.',
@@ -130,6 +160,21 @@ const translations = {
       fun: 'Modo diversión',
       training: 'Modo entrenamiento'
     },
+    modeNames: {
+      '301': '301',
+      '501': '501',
+      '701': '701',
+      '1001': '1001',
+      competition: 'Competición',
+      tannenbaum: 'Tannenbaum',
+      cricket: 'Cricket',
+      shanghai: 'Shanghai',
+      killer: 'Killer',
+      baseball: 'Béisbol',
+      double: 'Práctica de dobles',
+      checkout: 'Entrenador de checkout',
+      averages: 'Mejorar promedios'
+    },
     modeDescriptions: {
       classic: 'Juegos estándar conocidos para partidas relajadas.',
       competition: 'Basado en el modo oficial PDC.',
@@ -175,6 +220,21 @@ const translations = {
       competition: 'Соревнование',
       fun: 'Развлекательный',
       training: 'Тренировка'
+    },
+    modeNames: {
+      '301': '301',
+      '501': '501',
+      '701': '701',
+      '1001': '1001',
+      competition: 'Соревнование',
+      tannenbaum: 'Танненбаум',
+      cricket: 'Крикет',
+      shanghai: 'Шанхай',
+      killer: 'Киллер',
+      baseball: 'Бейсбол',
+      double: 'Тренировка даблов',
+      checkout: 'Тренер чекаутов',
+      averages: 'Улучшение среднего'
     },
     modeDescriptions: {
       classic: 'Стандартные игры для спокойных раундов.',
