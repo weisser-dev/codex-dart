@@ -7,6 +7,9 @@
   <link rel="manifest" href="manifest.json">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
   <header>
@@ -14,86 +17,10 @@
   </header>
 
   <main class="container py-3">
-    <section id="home">
-      <button id="btn-new-game" class="btn btn-primary w-100 mb-2">Neues Spiel starten</button>
-      <button id="btn-stats" class="btn btn-primary w-100 mb-2">Statistiken</button>
-      <button id="btn-players" class="btn btn-primary w-100 mb-2">Spieler</button>
-      <button id="btn-rules" class="btn btn-primary w-100">Regeln</button>
-    </section>
-
-    <section id="new-game" class="hidden">
-      <h2>Neues Spiel</h2>
-      <div class="mb-2">
-        <label for="mode" class="form-label">Spielmodus:</label>
-        <select id="mode" class="form-select">
-          <option value="301">301</option>
-          <option value="501" selected>501</option>
-          <option value="tannenbaum">Tannenbaum</option>
-        </select>
-      </div>
-      <div class="mb-2">
-        <label for="rounds" class="form-label">Runden:</label>
-        <input type="number" id="rounds" class="form-control" value="10" min="1">
-      </div>
-      <div class="form-check mb-1">
-        <input class="form-check-input" type="checkbox" id="double-in">
-        <label class="form-check-label" for="double-in">Double In</label>
-      </div>
-      <div class="form-check mb-2">
-        <input class="form-check-input" type="checkbox" id="double-out">
-        <label class="form-check-label" for="double-out">Double Out</label>
-      </div>
-      <div class="mb-2">
-        <label for="players" class="form-label">Spieler (Komma getrennt):</label>
-        <input type="text" id="players" class="form-control" placeholder="z.B. Alice,Bob">
-      </div>
-      <button id="add-guest" class="btn btn-secondary mb-2">Gast hinzuf&uuml;gen</button>
-      <div>
-        <button id="start-game" class="btn btn-success">Spiel starten</button>
-        <button class="btn btn-link" id="back-home-from-new">Zur&uuml;ck</button>
-      </div>
-    </section>
-
-    <section id="game" class="hidden">
-      <div class="d-flex justify-content-between align-items-center mb-2">
-        <h2 class="m-0">Aktives Spiel</h2>
-        <button class="btn btn-link" id="back-home-from-game">Beenden</button>
-      </div>
-      <div id="scoreboard" class="mb-3"></div>
-      <div id="throw-area" class="mb-3"></div>
-      <button id="next-player" class="btn btn-primary hidden">N&auml;chster Spieler</button>
-    </section>
-
-    <section id="stats" class="hidden">
-      <div class="d-flex justify-content-between align-items-center">
-        <h2 class="m-0">Statistiken</h2>
-        <button class="btn btn-link" id="back-home-from-stats">Zur&uuml;ck</button>
-      </div>
-      <div id="stats-content" class="mt-2"></div>
-    </section>
-
-    <section id="players" class="hidden">
-      <div class="d-flex justify-content-between align-items-center">
-        <h2 class="m-0">Spieler</h2>
-        <button class="btn btn-link" id="back-home-from-players">Zur&uuml;ck</button>
-      </div>
-      <div id="players-list" class="mt-2"></div>
-      <div class="input-group mt-2">
-        <input type="text" id="new-player" class="form-control" placeholder="Name">
-        <button id="add-player" class="btn btn-primary">Hinzuf&uuml;gen</button>
-      </div>
-    </section>
-
-    <section id="rules" class="hidden">
-      <div class="d-flex justify-content-between align-items-center">
-        <h2 class="m-0">Regeln</h2>
-        <button class="btn btn-link" id="back-home-from-rules">Zur&uuml;ck</button>
-      </div>
-      <p id="rules-text" class="mt-2">Waehle einen Spielmodus, um die Regeln zu sehen.</p>
-    </section>
+    <div id="root"></div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="app.js"></script>
+  <script type="text/babel" src="app.js"></script>
 </body>
 </html>
