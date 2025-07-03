@@ -11,11 +11,13 @@ Dieses Projekt beschreibt eine Beispiel-WebApp, die dabei hilft, Darts-Spiele im
 - **Schnelles Spiel**: Fuer einen schnellen Start lassen sich Spielmodus, Spieleranzahl und Double-Out-Einstellung ueber ein Dropdown bzw. einfache Schalter auswaehlen.
 - **Spiel- und Wurf-Statistiken**: Fuer Hauptspieler koennen Statistiken ueber alle Spiele hinweg gespeichert und gefiltert werden (z.B. letzte 5 Spiele, alle Spiele eines Jahres usw.).
 - **Regelerklaerungen**: Zu jedem Spielmodus gibt es eine kurze Beschreibung und Hinweise (in einer Hinweisbox) zu Besonderheiten der Regeln.
+- **Grafische Darstellung**: Treffer und Scores werden visuell angezeigt, um den Spielverlauf besser nachvollziehen zu koennen.
+- **Speicherung in localStorage**: Saemtliche Daten (Spielstaende, Statistiken) werden im Browser gespeichert.
+- **App-Installation**: Beim ersten Oeffnen erscheint ein Popup, das anbietet, die Seite als App zu speichern und als Kachel (PWA) auf dem Smartphone abzulegen.
 
 ## Perspektivische Erweiterungen
 
-- Speicherung der Daten im Browser (lokal) oder ueber ein einfaches Backend.
+- Speicherung aller Daten ausschliesslich im Browser (localStorage), kein Backend.
 - Grafische Darstellung von Treffern und Scores.
-- Teilen von Spielstatistiken mit Freunden.
 
 Diese README dient lediglich als Uebersicht der moeglichen Funktionen. Der Quellcode fuer eine vollstaendige Umsetzung ist hier nicht enthalten.
