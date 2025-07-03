@@ -31,7 +31,7 @@ const translations = {
     addGuestModalTitle: 'Gast hinzufügen',
     confirmMode: 'Spielmodus bestätigen',
     deletePlayerPrompt: 'Spieler löschen?',
-    gamesLabel: 'Spiele'
+    gamesLabel: 'Spiele',
     modes: {
       classic: 'Klassisch',
       competition: 'Wettkampfmodus',
@@ -77,7 +77,7 @@ const translations = {
     addGuestModalTitle: 'Add Guest',
     confirmMode: 'Confirm Game Mode',
     deletePlayerPrompt: 'Delete player?',
-    gamesLabel: 'games'
+    gamesLabel: 'games',
     modes: {
       classic: 'Classic',
       competition: 'Competition',
@@ -123,7 +123,7 @@ const translations = {
     addGuestModalTitle: 'Añadir invitado',
     confirmMode: 'Confirmar modo',
     deletePlayerPrompt: '¿Eliminar jugador?',
-    gamesLabel: 'partidas'
+    gamesLabel: 'partidas',
     modes: {
       classic: 'Clásico',
       competition: 'Competición',
@@ -169,7 +169,7 @@ const translations = {
     addGuestModalTitle: 'Добавить гостя',
     confirmMode: 'Подтвердить режим',
     deletePlayerPrompt: 'Удалить игрока?',
-    gamesLabel: 'игр'
+    gamesLabel: 'игр',
     modes: {
       classic: 'Классический',
       competition: 'Соревнование',
